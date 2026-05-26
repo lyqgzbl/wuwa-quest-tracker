@@ -2,7 +2,7 @@ name: Deploy static tracker page
 
 on:
   push:
-    branches: [ "docs" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:

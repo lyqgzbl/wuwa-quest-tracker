@@ -12,20 +12,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare static output
-        run: |
-          mkdir -p public
-          cp docs/quest_tracker_zh.html public/index.html
-
-      - name: Deploy to Target Repo
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Checkout shared Pages repository
+        uses: actions/checkout@v4
         with:
-          personal_token: ${{ secrets.DEPLOY_TOKEN }}
-          external_repository: lyqgzbl/wuwa-pages
-          publish_branch: gh-pages
-          publish_dir: ./public
-          destination_dir: quest
-          keep_files: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: "deploy: sync quest_tracker from upstream"
+          repository: lyqgzbl/wuwa-pages
+          ref: gh-pages
+          path: pages
+          token: ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: Deploy to shared Pages branch
+        run: |
+          rm -rf pages/quest
+          mkdir -p pages/quest
+          cp docs/quest_tracker_zh.html pages/quest/index.html
+          git -C pages config user.name 'github-actions[bot]'
+          git -C pages config user.email 'github-actions[bot]@users.noreply.github.com'
+          git -C pages add quest
+          if git -C pages diff --cached --quiet; then
+            exit 0
+          fi
+          git -C pages commit -m "deploy: sync quest_tracker from upstream"
+          for attempt in 1 2 3 4 5; do
+            if git -C pages push origin HEAD:gh-pages; then
+              exit 0
+            fi
+            git -C pages fetch origin gh-pages
+            git -C pages rebase origin/gh-pages
+            sleep $((attempt * 2))
+          done
+          exit 1

@@ -4,7 +4,8 @@ from .models import Quest, QuestCategory
 def build_dataset(
     quests: list[Quest],
     categories: list[QuestCategory],
-    texts: dict[str, str]
+    texts: dict[str, str],
+    game_version: str = "",
 ) -> dict[str, Any]:
 
     # Resolve names
@@ -60,5 +61,6 @@ def build_dataset(
         c["quests"].sort(key=lambda q: q["id"])
 
     return {
+        "game_version": game_version,
         "categories": out_cats
     }

@@ -68,6 +68,11 @@ def main() -> int:
         help="Locale label embedded into export (default: zh-Hans)",
     )
     parser.add_argument(
+        "--game-version",
+        default="",
+        help="Game version displayed in the generated page (for example: v3.5)",
+    )
+    parser.add_argument(
         "--quest-db",
         required=True,
         help="Path to db_quest.db",
@@ -129,7 +134,7 @@ def main() -> int:
 
     texts = load_multitext(multitext_dbs, wanted_keys)
 
-    dataset = build_dataset(quests, categories, texts)
+    dataset = build_dataset(quests, categories, texts, args.game_version)
 
     _ensure_parent_dir(out_path)
     html = render_html(dataset)

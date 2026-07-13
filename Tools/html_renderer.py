@@ -130,6 +130,7 @@ def render_html(dataset: dict[str, Any]) -> str:
     .sticky-wrapper.scrolled header {{ margin-bottom: 6px; }}
     header h2 {{ margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; transition: all 0.4s ease; white-space: nowrap; overflow: hidden; }}
     .sticky-wrapper.scrolled header h2 {{ width: 0; margin: 0; padding: 0; opacity: 0; font-size: 0; }}
+    .game-version {{ color: var(--text-muted); font-size: 13px; white-space: nowrap; }}
     .overall-wrap {{ display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }}
     .overall-text {{ font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 500; white-space: nowrap; }}
     .progress-bar {{
@@ -303,6 +304,7 @@ def render_html(dataset: dict[str, Any]) -> str:
     <div class="sticky-container">
       <header>
         <h2>任务统计</h2>
+        <span id="gameVersion" class="game-version" hidden></span>
         <div class="overall-wrap">
           <span id="overall" class="overall-text"></span>
           <div class="progress-bar"><div id="overallBar" class="progress-bar-inner"></div></div>
@@ -332,6 +334,12 @@ def render_html(dataset: dict[str, Any]) -> str:
 
 <script>
 const DATA = {dataset_json};
+const gameVersion = typeof DATA.game_version === 'string' ? DATA.game_version.trim() : '';
+const gameVersionEl = document.getElementById('gameVersion');
+if (gameVersion) {{
+  gameVersionEl.textContent = '游戏版本 ' + gameVersion;
+  gameVersionEl.hidden = false;
+}}
 const STORE_KEY = 'wuwa_quest_completed';
 const ACTIVE_KEY = 'wuwa_quest_active'; // Optional feature
 const OPEN_CAT_KEY = 'wuwa_quest_open_cats';
@@ -367,6 +375,8 @@ function loadSet(key) {{
   catch {{ return new Set(); }}
 }}
 function saveSet(key, set) {{ localStorage.setItem(key, JSON.stringify([...set])); }}
+
+let completed = loadSet(STORE_KEY);
 
 function exportProgress() {{
   const compSet = loadSet(STORE_KEY);
@@ -448,8 +458,20 @@ function makeProgressSpan(done, total) {{
   return wrap;
 }}
 
+function updateOverallProgress() {{
+  const counts = computeCounts(DATA.categories || [], completed);
+  document.getElementById('overall').textContent = counts.done + ' / ' + counts.total;
+  const overallBar = document.getElementById('overallBar');
+  const pct = counts.total > 0 ? (counts.done / counts.total) * 100 : 0;
+  overallBar.style.width = pct + '%';
+  if (counts.done === counts.total && counts.total > 0) {{
+    overallBar.classList.add('full');
+  }} else {{
+    overallBar.classList.remove('full');
+  }}
+}}
+
 function render() {{
-  const completed = loadSet(STORE_KEY);
   const active = loadSet(ACTIVE_KEY);
   const openCats = loadSet(OPEN_CAT_KEY);
   const q = (document.getElementById('q').value || '').trim().toLowerCase();
@@ -522,10 +544,27 @@ function render() {{
       li.className = 'ach-item' + (isDone ? ' done' : '') + (isActive ? ' active' : '');
 
       li.addEventListener('click', () => {{
-        const set = loadSet(STORE_KEY);
-        if (set.has(quest.id)) set.delete(quest.id); else set.add(quest.id);
-        saveSet(STORE_KEY, set);
-        render();
+        const selection = window.getSelection();
+        if (selection && !selection.isCollapsed && selection.toString().trim()) {{
+          return;
+        }}
+        const q = document.getElementById('q').value.trim();
+        const onlyTodo = document.getElementById('onlyTodo').checked;
+        const needFullRender = q.length > 0 || onlyTodo;
+        const isDone = completed.has(quest.id);
+        if (isDone) {{
+          completed.delete(quest.id);
+        }} else {{
+          completed.add(quest.id);
+        }}
+        saveSet(STORE_KEY, completed);
+        if (needFullRender) {{
+          render();
+          return;
+        }}
+        li.classList.toggle('done');
+        li.classList.toggle('active', isDone && active.has(quest.id));
+        updateOverallProgress();
       }});
 
       const customCb = document.createElement('div');
@@ -592,6 +631,7 @@ async function importFile(file) {{
 
   saveSet(STORE_KEY, compSet);
   saveSet(ACTIVE_KEY, actSet);
+  completed = loadSet(STORE_KEY);
 
   alert(`导入成功！新增标记了 ${{addCount}} 个已完成任务。`);
   render();

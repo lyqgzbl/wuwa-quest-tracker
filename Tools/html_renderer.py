@@ -1,7 +1,9 @@
 import json
+from collections.abc import Mapping
 from typing import Any
 
-def render_html(dataset: dict[str, Any]) -> str:
+
+def render_html(dataset: Mapping[str, Any]) -> str:
     dataset_json = json.dumps(dataset, ensure_ascii=False).replace("</", r"<\/")
 
     return f"""<!doctype html>
@@ -12,100 +14,100 @@ def render_html(dataset: dict[str, Any]) -> str:
   <title>鸣潮 任务统计</title>
   <style>
     :root, [data-theme="light"] {{
-      --bg: #fafafa;
-      --bg-alpha: rgba(250, 250, 250, 0.65);
-      --text: #2d3748;
-      --text-muted: #718096;
-      --card-bg: #ffffff;
-      --card-hover: #f7fafc;
-      --border: rgba(0, 0, 0, 0.06);
-      --summary-bg: #ffffff;
-      --summary-hover: #f1f5f9;
-      --accent: #4f46e5;
-      --accent-light: rgba(79, 70, 229, 0.1);
-      --progress-bg: #e2e8f0;
-      --progress-fill: linear-gradient(90deg, #6366f1, #4f46e5);
-      --progress-full: linear-gradient(90deg, #10b981, #059669);
+      --bg: #f5f5f7;
+      --bg-alpha: rgba(245, 245, 247, 0.72);
+      --text: #1d1d1f;
+      --text-muted: #86868b;
+      --card-bg: rgba(255, 255, 255, 0.7);
+      --card-hover: rgba(255, 255, 255, 1);
+      --border: rgba(0, 0, 0, 0.04);
+      --summary-bg: rgba(255, 255, 255, 0.6);
+      --summary-hover: rgba(255, 255, 255, 0.9);
+      --accent: #0066cc;
+      --accent-light: rgba(0, 102, 204, 0.1);
+      --progress-bg: rgba(0, 0, 0, 0.08);
+      --progress-fill: #0066cc;
+      --progress-full: #34c759;
       --mark-bg: #fde047;
       --mark-text: #854d0e;
-      --btn-bg: #ffffff;
-      --btn-hover: #f8fafc;
-      --btn-border: rgba(0, 0, 0, 0.1);
-      --input-bg: #ffffff;
-      --input-border: rgba(0, 0, 0, 0.1);
-      --done-opacity: 0.55;
-      --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
-      --shadow-md: 0 8px 16px -4px rgba(0, 0, 0, 0.05), 0 4px 8px -2px rgba(0, 0, 0, 0.02);
-      --badge-bg: rgba(79, 70, 229, 0.1);
-      --badge-text: #4f46e5;
-      --card-gradient: linear-gradient(145deg, #ffffff, #fafafa);
+      --btn-bg: rgba(255, 255, 255, 0.6);
+      --btn-hover: rgba(255, 255, 255, 1);
+      --btn-border: rgba(0, 0, 0, 0.06);
+      --input-bg: rgba(255, 255, 255, 0.6);
+      --input-border: rgba(0, 0, 0, 0.06);
+      --done-opacity: 0.5;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.02);
+      --badge-bg: rgba(0, 102, 204, 0.1);
+      --badge-text: #0066cc;
+      --card-gradient: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.5));
       color-scheme: light;
     }}
     [data-theme="dark"] {{
-      --bg: #0f172a;
-      --bg-alpha: rgba(15, 23, 42, 0.65);
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --card-bg: #1e293b;
-      --card-hover: #27344c;
-      --border: rgba(255, 255, 255, 0.06);
-      --summary-bg: #1e293b;
-      --summary-hover: #2b3b54;
-      --accent: #38bdf8;
-      --accent-light: rgba(56, 189, 248, 0.15);
-      --progress-bg: #334155;
-      --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8);
-      --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
+      --bg: #000000;
+      --bg-alpha: rgba(18, 18, 20, 0.75);
+      --text: #f5f5f7;
+      --text-muted: #86868b;
+      --card-bg: #2c2c2e;
+      --card-hover: #3a3a3c;
+      --border: rgba(255, 255, 255, 0.1);
+      --summary-bg: #1c1c1e;
+      --summary-hover: #2c2c2e;
+      --accent: #2997ff;
+      --accent-light: rgba(41, 151, 255, 0.15);
+      --progress-bg: rgba(255, 255, 255, 0.12);
+      --progress-fill: #2997ff;
+      --progress-full: #32d74b;
       --mark-bg: #b45309;
       --mark-text: #fef08a;
-      --btn-bg: #1e293b;
-      --btn-hover: #293952;
+      --btn-bg: #2c2c2e;
+      --btn-hover: #3a3a3c;
       --btn-border: rgba(255, 255, 255, 0.1);
-      --input-bg: #0f172a;
+      --input-bg: #1c1c1e;
       --input-border: rgba(255, 255, 255, 0.1);
-      --done-opacity: 0.45;
-      --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
-      --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
-      --badge-bg: rgba(56, 189, 248, 0.15);
-      --badge-text: #38bdf8;
-      --card-gradient: linear-gradient(145deg, #1e293b, #151e2f);
+      --done-opacity: 0.4;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+      --badge-bg: rgba(41, 151, 255, 0.15);
+      --badge-text: #2997ff;
+      --card-gradient: linear-gradient(180deg, #3a3a3c, #323234);
       color-scheme: dark;
     }}
     @media (prefers-color-scheme: dark) {{
       [data-theme="auto"] {{
-        --bg: #0f172a;
-        --bg-alpha: rgba(15, 23, 42, 0.65);
-        --text: #f1f5f9;
-        --text-muted: #94a3b8;
-        --card-bg: #1e293b;
-        --card-hover: #27344c;
-        --border: rgba(255, 255, 255, 0.06);
-        --summary-bg: #1e293b;
-        --summary-hover: #2b3b54;
-        --accent: #38bdf8;
-        --accent-light: rgba(56, 189, 248, 0.15);
-        --progress-bg: #334155;
-        --progress-fill: linear-gradient(90deg, #0ea5e9, #38bdf8);
-        --progress-full: linear-gradient(90deg, #22c55e, #4ade80);
+        --bg: #000000;
+        --bg-alpha: rgba(18, 18, 20, 0.75);
+        --text: #f5f5f7;
+        --text-muted: #86868b;
+        --card-bg: #2c2c2e;
+        --card-hover: #3a3a3c;
+        --border: rgba(255, 255, 255, 0.1);
+        --summary-bg: #1c1c1e;
+        --summary-hover: #2c2c2e;
+        --accent: #2997ff;
+        --accent-light: rgba(41, 151, 255, 0.15);
+        --progress-bg: rgba(255, 255, 255, 0.12);
+        --progress-fill: #2997ff;
+        --progress-full: #32d74b;
         --mark-bg: #b45309;
         --mark-text: #fef08a;
-        --btn-bg: #1e293b;
-        --btn-hover: #293952;
+        --btn-bg: #2c2c2e;
+        --btn-hover: #3a3a3c;
         --btn-border: rgba(255, 255, 255, 0.1);
-        --input-bg: #0f172a;
+        --input-bg: #1c1c1e;
         --input-border: rgba(255, 255, 255, 0.1);
-        --done-opacity: 0.45;
-        --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
-        --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 6px 10px -3px rgba(0, 0, 0, 0.2);
-        --badge-bg: rgba(56, 189, 248, 0.15);
-        --badge-text: #38bdf8;
-        --card-gradient: linear-gradient(145deg, #1e293b, #151e2f);
+        --done-opacity: 0.4;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+        --badge-bg: rgba(41, 151, 255, 0.15);
+        --badge-text: #2997ff;
+        --card-gradient: linear-gradient(180deg, #3a3a3c, #323234);
         color-scheme: dark;
       }}
     }}
     * {{ box-sizing: border-box; }}
     body {{
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'PingFang SC', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
       margin: 0; padding: 0 16px 24px 16px;
       background: var(--bg); color: var(--text);
       line-height: 1.5;
@@ -116,19 +118,19 @@ def render_html(dataset: dict[str, Any]) -> str:
     .sticky-wrapper {{
       position: sticky; top: 0; z-index: 100;
       background: var(--bg-alpha);
-      backdrop-filter: blur(24px) saturate(200%); -webkit-backdrop-filter: blur(24px) saturate(200%);
+      backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%);
       margin: 0 -16px 20px -16px; padding: 16px 16px 12px 16px;
       border-bottom: 1px solid var(--border);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }}
     .sticky-wrapper.scrolled {{
       padding: 8px 16px 8px 16px;
       box-shadow: var(--shadow-sm);
     }}
     .sticky-container {{ max-width: 820px; margin: 0 auto; }}
-    header {{ display: flex; gap: 16px; align-items: center; flex-wrap: nowrap; margin-bottom: 12px; transition: all 0.4s ease; }}
+    header {{ display: flex; gap: 16px; align-items: center; flex-wrap: nowrap; margin-bottom: 12px; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }}
     .sticky-wrapper.scrolled header {{ margin-bottom: 6px; }}
-    header h2 {{ margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; transition: all 0.4s ease; white-space: nowrap; overflow: hidden; }}
+    header h2 {{ margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); white-space: nowrap; overflow: hidden; }}
     .sticky-wrapper.scrolled header h2 {{ width: 0; margin: 0; padding: 0; opacity: 0; font-size: 0; }}
     .game-version {{ color: var(--text-muted); font-size: 13px; white-space: nowrap; }}
     .overall-wrap {{ display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }}
@@ -139,7 +141,7 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     .progress-bar-inner {{
       height: 100%; border-radius: 999px; background: var(--progress-fill);
-      transition: width 0.8s ease-out, background 0.5s ease;
+      transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1), background 0.5s ease;
     }}
     .progress-bar-inner.full {{ background: var(--progress-full); }}
     .summary-progress {{
@@ -149,12 +151,12 @@ def render_html(dataset: dict[str, Any]) -> str:
     }}
     .summary-progress-inner {{
       display: block; height: 100%; border-radius: 999px; background: var(--progress-fill);
-      transition: width 0.8s ease-out, background 0.5s ease;
+      transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1), background 0.5s ease;
     }}
     .summary-progress-inner.full {{ background: var(--progress-full); }}
     .toolbar {{
       display: flex; gap: 10px; align-items: center; flex-wrap: nowrap;
-      transition: all 0.4s ease;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
       overflow-x: auto; padding-bottom: 2px;
       -webkit-overflow-scrolling: touch; scrollbar-width: none;
     }}
@@ -169,55 +171,63 @@ def render_html(dataset: dict[str, Any]) -> str:
       width: 100%; padding: 10px 14px 10px 36px;
       border: 1px solid var(--input-border); border-radius: 10px;
       background: var(--input-bg); color: var(--text); font-size: 14px; outline: none;
-      transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }}
     .sticky-wrapper.scrolled input[type="search"] {{ padding: 8px 12px 8px 32px; font-size: 13px; border-radius: 8px; }}
     input[type="search"]:focus {{
       border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light);
+      background: var(--card-bg);
     }}
     input[type="search"]::placeholder {{ color: var(--text-muted); }}
     .pill {{
       display: inline-flex; align-items: center; gap: 6px;
       padding: 8px 14px; border: 1px solid var(--btn-border); border-radius: 999px;
       background: var(--btn-bg); color: var(--text); font-size: 14px; font-weight: 500;
-      cursor: pointer; user-select: none; transition: all 0.3s ease;
+      cursor: pointer; user-select: none; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
       box-shadow: var(--shadow-sm); white-space: nowrap; flex-shrink: 0;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }}
     .sticky-wrapper.scrolled .pill {{ padding: 6px 12px; font-size: 13px; }}
-    .pill:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
-    .pill input[type="checkbox"] {{ margin: 0; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; pointer-events: none; transition: all 0.4s ease; }}
+    .pill:hover {{ background: var(--btn-hover); border-color: var(--text-muted); transform: translateY(-1px); }}
+    .pill:active {{ transform: scale(0.96); transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }}
+    .pill input[type="checkbox"] {{ margin: 0; accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; pointer-events: none; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }}
     .sticky-wrapper.scrolled .pill input[type="checkbox"] {{ width: 14px; height: 14px; }}
     .btn {{
       padding: 8px 14px; border: 1px solid var(--btn-border); border-radius: 10px;
       background: var(--btn-bg); color: var(--text); font-size: 14px; font-weight: 500;
-      cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: var(--shadow-sm);
       white-space: nowrap; flex-shrink: 0;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }}
     .sticky-wrapper.scrolled .btn {{ padding: 6px 12px; font-size: 13px; border-radius: 8px; }}
-    .btn:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
+    .btn:hover {{ background: var(--btn-hover); border-color: var(--text-muted); transform: translateY(-1px); }}
+    .btn:active {{ transform: scale(0.96); transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }}
     .btn-icon {{
       width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
       border: 1px solid var(--btn-border); border-radius: 10px;
       background: var(--btn-bg); color: var(--text); font-size: 18px;
-      cursor: pointer; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
-      flex-shrink: 0;
+      cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: var(--shadow-sm);
+      flex-shrink: 0; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }}
     .sticky-wrapper.scrolled .btn-icon {{ width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }}
-    .btn-icon:hover {{ background: var(--btn-hover); border-color: var(--text-muted); }}
+    .btn-icon:hover {{ background: var(--btn-hover); border-color: var(--text-muted); transform: translateY(-1px); }}
+    .btn-icon:active {{ transform: scale(0.92); transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }}
     .tree {{ list-style: none; padding: 0; margin: 0; }}
     .tree > li {{ margin-bottom: 16px; }}
-    details {{ margin: 0; border: 1px solid var(--border); border-radius: 14px; background: var(--summary-bg); box-shadow: var(--shadow-sm); overflow: hidden; transition: box-shadow 0.3s ease, border-color 0.3s ease; }}
-    details:hover {{ box-shadow: var(--shadow-md); border-color: var(--accent-light); }}
+    details {{ margin: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--summary-bg); box-shadow: var(--shadow-sm); overflow: hidden; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }}
+    details:hover {{ box-shadow: var(--shadow-md); border-color: var(--accent-light); background: var(--summary-hover); }}
     summary {{
       cursor: pointer; user-select: none; list-style: none;
-      padding: 14px 18px; font-weight: 600; font-size: 16px;
-      display: flex; align-items: center; gap: 10px; transition: background 0.3s ease;
+      padding: 14px 18px; font-weight: 600; font-size: 16px; letter-spacing: -0.2px;
+      display: flex; align-items: center; gap: 10px; transition: background 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     }}
-    summary:hover {{ background: var(--summary-hover); }}
+    summary:active {{ background: rgba(0,0,0,0.02); }}
+    [data-theme="dark"] summary:active {{ background: rgba(255,255,255,0.02); }}
     summary::-webkit-details-marker {{ display: none; }}
     .chevron {{
       width: 20px; height: 20px; flex-shrink: 0; color: var(--text-muted);
-      transition: transform 0.4s ease;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }}
     details[open] > summary .chevron {{ transform: rotate(90deg); }}
     .summary-text {{ flex: 1; }}
@@ -226,50 +236,53 @@ def render_html(dataset: dict[str, Any]) -> str:
       background: var(--badge-bg); color: var(--badge-text);
       padding: 2px 8px; border-radius: 999px; white-space: nowrap;
     }}
-    .node {{ border-top: 1px solid var(--border); background: var(--bg); padding: 12px; }}
-    .node details {{ margin-bottom: 8px; border-radius: 12px; box-shadow: none; border-color: var(--border); }}
+    .node {{ border-top: 1px solid var(--border); background: transparent; padding: 12px; }}
+    .node details {{ margin-bottom: 8px; border-radius: 12px; box-shadow: none; border-color: var(--border); background: var(--card-bg); }}
     .node details:last-child {{ margin-bottom: 0; }}
     .node summary {{ font-size: 15px; padding: 10px 14px; }}
-    .ach-list {{ list-style: none; padding: 8px; margin: 0; background: var(--bg); }}
+    .ach-list {{ list-style: none; padding: 8px; margin: 0; background: transparent; }}
     .ach-item {{
       display: flex; gap: 14px; padding: 14px; margin-bottom: 8px;
       border-radius: 12px; background: var(--card-gradient); border: 1px solid var(--border);
-      transition: all 0.4s ease; cursor: pointer;
-      position: relative; overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer;
+      position: relative; overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
     }}
     .ach-item:last-child {{ margin-bottom: 0; }}
-    .ach-item:hover {{ transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-light); }}
+    .ach-item:hover {{ transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--accent-light); background: var(--card-hover); }}
+    .ach-item:active {{ transform: scale(0.98); transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }}
     .ach-item-checkbox {{
       flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px;
-      border: 2px solid var(--text-muted); border-radius: 6px;
+      border: 2px solid var(--text-muted); border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      transition: all 0.3s ease; background: var(--card-bg);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); background: var(--card-bg);
     }}
     .ach-item-checkbox svg {{
       width: 14px; height: 14px; color: white; opacity: 0; transform: scale(0.5);
-      transition: all 0.4s ease;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }}
     .ach-item.done .ach-item-checkbox {{ background: var(--accent); border-color: var(--accent); }}
     .ach-item.done .ach-item-checkbox svg {{ opacity: 1; transform: scale(1); }}
-    .ach-content {{ flex: 1; transition: opacity 0.4s ease; }}
-    .ach-title {{ font-weight: 600; font-size: 15px; transition: color 0.4s ease; }}
+    .ach-content {{ flex: 1; transition: opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1); }}
+    .ach-title {{ font-weight: 600; font-size: 15px; letter-spacing: -0.2px; transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1); }}
     .ach-desc {{ font-size: 13px; color: var(--text-muted); white-space: pre-wrap; margin-top: 4px; line-height: 1.5; }}
     .ach-item.done {{ background: var(--card-bg); opacity: var(--done-opacity); box-shadow: none; border-color: transparent; }}
     .ach-item.done:hover {{ transform: none; box-shadow: none; border-color: transparent; }}
+    .ach-item.done:active {{ transform: scale(0.98); }}
     .ach-item.done .ach-title {{ text-decoration: line-through; color: var(--text-muted); }}
     .ach-item.active {{ background: rgba(245, 158, 11, 0.1); border-left: 3px solid #f59e0b; }}
-    mark {{ background: var(--mark-bg); color: var(--mark-text); border-radius: 3px; padding: 0 2px; font-weight: 500; }}
+    mark {{ background: var(--mark-bg); color: var(--mark-text); border-radius: 4px; padding: 0 4px; font-weight: 500; }}
     .scroll-top {{
       position: fixed; bottom: 24px; right: 24px; z-index: 90;
       width: 44px; height: 44px; border-radius: 50%;
-      background: var(--bg-alpha); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      background: var(--bg-alpha); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border: 1px solid var(--border); color: var(--text);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; opacity: 0; transform: translateY(20px) scale(0.9); pointer-events: none;
-      transition: all 0.4s ease; box-shadow: var(--shadow-md);
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: var(--shadow-md);
     }}
     .scroll-top.visible {{ opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }}
     .scroll-top:hover {{ background: var(--btn-hover); transform: translateY(-2px) scale(1.05); }}
+    .scroll-top:active {{ transform: translateY(0) scale(0.92); transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }}
     @media (max-width: 600px) {{
       body {{ padding: 0 12px 20px 12px; }}
       .sticky-wrapper {{ margin: 0 -12px 16px -12px; padding: 12px 12px 8px 12px; }}
@@ -601,7 +614,7 @@ async function importFile(file) {{
   let payload;
   try {{ payload = JSON.parse(text); }} catch {{ alert('无效的 JSON 文件'); return; }}
 
-  if (payload.schema !== 'ww_quest_export_v1') {{
+  if (!payload || typeof payload !== 'object' || payload.schema !== 'ww_quest_export_v1') {{
     alert('不支持的数据格式！需要 wuwa_quest_dump.py 导出的 quest_export.json');
     return;
   }}

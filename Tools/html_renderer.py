@@ -2,6 +2,67 @@ import json
 from collections.abc import Mapping
 from typing import Any
 
+FAVICON_PNG_BASE64 = (
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAMzklEQVR42"
+    "jWWaXiV9YFHz/ve9+5rblaSkJBEEghgWAwkFoNiCOCAIkVBwIpLaxzFoeNUq7XKFKu1UmZcAOfBqYq2"
+    "4FYUjYCyKSQQw5JEQkjIvt8sNzc3d1/e/3ywcz6e53z6ffpJZ6qGRHRUxWEz0N4ZwGKXsJn0xGOCEC"
+    "FEWMJh0aOYDfgCej4+fJaMGfnoQ+PodSGKpmdilBXiiiCCk66zdaTk1lOxtZKoGOer339BQt4vMDk8"
+    "+HxBgiGVjClGXD0RzDkysm4SbrzZgWKIkzNbS0KCDm+7Btlvof9qHN+EyqRHZaxPi6+pird+1UFK6z"
+    "7qB82ca9cx4U0jGk0iEnQw2hFjZOAYFVsr8cdBKyWQOlXG1dqHZ0BLb4eNsQGVsZ4YRptM3CVQrDY9"
+    "QbfA4TAR00eRLTYKy6uxWj34dy0hInlwWs10jcgsL45x/JzE0eMdSLlnsRqDuOp+xKXo0dgKGXYZmX"
+    "V7AQDVZzrQZeeSmG5FaTNTWKhSMeMIVZ+Vo0gaIqMh0mboUMIiSnetB71Wx5g7CBGVu0rDgB9fPEI0"
+    "Ct1+M23N15jiukp67kx2vvEgxlgfKdPzIMkOEwFcXc1UHWil99I47eoGLCm5jE7ApUMnsRuK8Uf0IH"
+    "mYjIYJB2JE1TiKWyD959M1wtUfQZFlNFoNPo9KRqodi93ElRYPsSQbvsZvePUxM/nzZ+GtacI28wYo"
+    "WwxdI+D3Q3IiWPUghYmeOsOn3SYujl3HJYpYkR3CU1XFV+FHsWr9rJ5lZkqigjcAU3J1SB+81SQ62i"
+    "JoNaBRQJYk/D5QVZWQIZVQwyFefyUbilfh+/MHeKMhzPE4dlsCbFkLPi/4fITdE+idTsjLhI7rSDPy"
+    "2fDUEQ7sXEH0430s364jJXcmv1g9j8xkLWOjbpzpoMjI6GQNWp0ASQLAYBMEtbl4zn/J/zyTAsWrmH"
+    "j1A+zZaZyNj7BiUTl3LV3MRw4LhrUVEI4i63QMX2slRSNBwXQeXLeOOWP7gRVo06az6+VBLlztpK26"
+    "Hn9aOql5i9DLZjRrlm/dHvILNDoZoZFRVZmYeRrXz9XwhzuHsK3fAv0+5t1XjmdmJg8/8SQ/9rXyee"
+    "05qq5cYG1mAea8XDQSyE4zA5caccwpQPS7eOjV19gWs+M5dYHYE09QUV7EorsX4O7/hMGWDJzTk1Es"
+    "JgWPThAXoKhxVvxsFlu+foeNK0bJ/NVWCMCRrw7SpVOJDbt59+XXWDL3JrZvfAxZqyE4GYb+PpiWi/"
+    "HHJgxxFY7VsjK/iDfL1uKLRzl6yxpsb3+JdqadvFXLOPtDJi3jSYS6x1FiQkJCRpIEcSQMOrCm5BNV"
+    "/TAuYGIYOS4RPHoJ5kyHSUAPaICwSvBqMwOXm0lPcIDZiM7lofXyVfKdiZSt2UC0u5lHMoNQPBuv18"
+    "f+Z55mqDbGzUvsBCeKkGNxUGUJFRlVktEAzuyFKLZUSLKAz8fy0qVgtUE0jtrciHrxMrR3wMQYE53d"
+    "9LY2sHnPNuouHCJh7VriUozu0UF8Iz0M5+SjNvcQ8QaJjU1yo3M6r1/cxbKCHiaPv4SsKArhSIx4OI"
+    "YakfBEYdzVjkb2ABBwuYi7x+mqvwShMLLdzvjACPQOMlLzA8FIFKk4ld7UDLKt2aDEmPncVrLX3Iry"
+    "7VFsBYnIixag09twFhdin5pKxzU/psJbUe0FKItnOChOc6DTQp87hKQFNTaJJhyGsRBqIIQv6Kezq4"
+    "FpzqmQm4kzyUFLXzMZUTPJxQvJyVzBdz/WEOuaQFTXEmmo429tce578AHO7dpL7L9fQHn/bZqHHGim"
+    "3c6Z83u48+H7uGP5ImSdUYfeoGAxabEa9TjtkCbasDrTQAKLIhPr7OS2Z39LNCNA6+F/II37SMvLwl"
+    "2gY2XpDexcvQTa3AxfaeL0F4eZDPXxkXUx39+zmaVLZ9Kw9zyu4jKuuiZYvL6EVdZ0Tj33LAkFc8F9"
+    "OShGjnvF8NEJ0XciLloOj4qvShaKujfeFWIsKMSVLnHwgfUCEI/M3Sj6678RaswtRqqrxMq0EjHN+E"
+    "sBaWItiMmqz0VXV7WI735KHPzzSTFrpxCiqVNcrNwq3N8LEbggRPvXASGuC+E5pQr/dSFkEY/gCcWx"
+    "5il4JwPoDHrm7ThNKGahJaoDKcroUD9bVu6k23kvzVfCSJoEkm6+g30Xz/Hz3duoahjks5rvMaYn4I"
+    "jbkRfcRQ1ZZDFJZW0W036+joFLexhxg00x4hkMEVGjBNwBpAOv9wohqdy3xMmJ+gCd3VGsKRnEL1Xh"
+    "vDOF2fOKyfx0L6y/hUDqbEz8Pz7AAniAOJw8wfy/yHy61khLcw8vmVazKN1EQJbQ6R3ck9xIc905XM"
+    "MFzM2YzVjAR0aBAc2jD/x2+123WaFBJvcWPRNuGV1QRZM8i9iRPeiSzZwecqCcP4J+/5+YaL2I5cYc"
+    "0Kcz8OYurM0NVNfXcqbJzZxkHdrJPpbdWkBYhRa/gRyzBkVrZERNY9lUL69UX2RO1jSyTAlo9HEU1Q"
+    "MfHpxk8xYbJ48GGOmLYdBr8Q4coXzVTD5ptZPUWc8VXZDX/3qMwrJSyrJVNP6vaT7fSenBt7hcXsH6"
+    "o8fIjfZCTwtXLkW57LWjtyioOg1xSSJb6mZm2SxWjKfT2x+l0BRHY5VRHHYdgWEtR74IYJMcXOs7hj"
+    "2jk0dWT2d/cAPdEYknfy0R0t+Et2w5dX1mNt07k8dXPU5UaDiw+U5au8NslADdVKjZw8f9t9HrzKMs"
+    "VMe1xijGjAzWV0RBSmJmio/+Zi/mJBNhOYicPDXC3S/UIXnN6GSV3zy2kpuKZmPJKaVmUCEr3MPV99"
+    "7BkFXE7SlphN6vIOZz0SfbyJ5XSFlpGf/++GbOPvtH2s5e4vM6GM2tYH7kOs/lhDCMjfLsoijY7aAx"
+    "IDxuShKmEFViKKoGOTiq0FpVhEEfwaLTMBwfJGpJA4eeNN91ZiULjnfF6Tt9DHf6VDqyXuKep5upP3"
+    "OEn03P4c5bK7jjns3k9FTzzgNPsa/8Fay+IXZkuRgP2lhalsK0wmQwO6h3DeHp0JBiT0INxzFaNGie"
+    "2Pi77d5eI4pBkGgxoTomiZlNZKQnkGeP8uaHJ5HiMiX2TE42tJH60P2kfXuAqw3fYFElcM6hO5KHc/"
+    "MmCIVor2lnx8IkTGYLVybiJCXbSZ+dwuXmYS5/Pk558ixMN4RBB0KVkONBGZ0uji4uIUcF9R0D/FDf"
+    "DhLkFaWRkWqgrKSM9AUlpDnnMVwd5GrHJ+Su3Ix91QbOX/g7dyyAuQ64+8VKtj2+gLqLVxjHzv6Lgw"
+    "ijnpqGIK++0YwqIDplgoQJBUdMg2KVkYJ9fqF6BCania6WEc6E/LQ2jZCYmMq2Ldm8/W4NWSRSUlRA"
+    "7Q/fM/+heaTqrIz1w6M7/8C5bz7mZpPCxqf+wt0bbgfArY7zm6dO8LsH11H13UW8zjwqis10edzM1"
+    "oYpGJnKuOTHtkCDFBoICCUu0KSaaDjfwnBiNssKDfzxfR+zHEEMlmGCPhuWq6dYltPP3302dh84Tc3"
+    "JT5EAvQwhFRLMOp55+peIlE1smhNlauNJXmt3Yly0hsp1WSgS7Hq/lX+dn4JhjhkmI4iYjKKGBREhM"
+    "KqQabRwrWMMCjMoW2jhpf86z5qFKfSnT2WKcza3tday6cU9LCzI58lVpfSO6+gfC5NoiRGLDbNj+2X"
+    "8Yjfm4ny2/vphhvwRXroni7EAvLKvmqWTiRjWOGDUj4hAzAAKgCyAMHRN+Dn0UT3Fpffi7xuiLMXOs"
+    "gU38u3Xh0hu/JC6/m72ziigsvka9E+w6e69zEhM4v2zm1FPfIem/AAvvLiVctcXVP/jFM8kCg7tvoG"
+    "e3DVYNHqKliQzZFdJG4W4ACIgCwF6gwlGvLTJGiqfv5cX9gyQ5wjw+P351DdeIiE1DTUSIVyygsqjh"
+    "wHYuOVJmlynudJ9GDDweWMTOIdZf+u/EBjqpaf7GodrOmn97gyVK+H2khlMKZLREiIeAzUKalQg68w"
+    "C0iXeO1HNieON1DW5KJ82wvTiNP7twCVqw3MZvnyee/e8x9+CPvbXnoXwKM9XruPUt//LjspiABZk2"
+    "3n5r1+zt+oYp4KpVLzeilyykWmzS/n9rgtIvj50tgQSBwQag4TOIaF3yD8tQBTK5uRjkxRWZ/vYcn8"
+    "RYKKsIANjvIWHntlEztzpfPvlQQ59+BmSIZnzHe0k5Gfw9tEv6e9rYsfufSyQ2+h472m2Pf8u7vYmL"
+    "BEvpfev42xziImIAQBV/PPQajQgaaDxuwEhAjEhhBDCL4SICCEmQ0IEVSHUf3ohBCDmFM4SpTfNF4A"
+    "IdQ2LP/3HswIQSxcvEsBP4YAQYlAI0SGEuPqTCg8PCDHhFuFut/C2ucVk/7Dw9g6KxjOD4v8AbrsKI"
+    "AfchygAAAAASUVORK5CYII="
+)
+
 
 def render_html(dataset: Mapping[str, Any]) -> str:
     dataset_json = json.dumps(dataset, ensure_ascii=False).replace("</", r"<\/")
@@ -12,6 +73,8 @@ def render_html(dataset: Mapping[str, Any]) -> str:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>鸣潮 任务统计</title>
+  <link rel="icon" type="image/png" href="{FAVICON_PNG_BASE64}" />
+  <link rel="apple-touch-icon" href="{FAVICON_PNG_BASE64}" />
   <style>
     :root, [data-theme="light"] {{
       --bg: #f5f5f7;
